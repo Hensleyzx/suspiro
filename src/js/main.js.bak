@@ -1,0 +1,25 @@
+import '../css/genesis.css';
+import { mountLayout, injectFontAwesome, warningBanner } from './common.js';
+import { PROJECT_INFO, carregarAnalises } from './data.js';
+import { loadDatapack } from './datapack.js';
+import { cbio } from './cbio-api.js';
+
+injectFontAwesome();
+mountLayout('inicio','Início');
+const content=document.getElementById('page-content'),history=carregarAnalises(),dp=await loadDatapack().catch(()=>null);
+let catalog=null;try{catalog=await cbio.listLlaStudies();}catch{}
+content.innerHTML=`
+  ${warningBanner()}
+  <section class="hero">
+    <span class="hero__badge"><i class="fa-solid fa-dna"></i> Bioinformática · Leucemia Linfoblástica Aguda</span>
+    <h1 class="hero__title">${PROJECT_INFO.name}</h1>
+    <p class="hero__subtitle">${PROJECT_INFO.subtitle}</p>
+    <div class="hero__actions"><a href="/bioinformatica.html" class="btn btn-primary btn-lg"><i class="fa-solid fa-database"></i> Explorar estudos LLA</a><a href="/analise.html" class="btn btn-secondary btn-lg"><i class="fa-solid fa-dna"></i> Nova análise</a><a href="/dashboard.html" class="btn btn-ghost btn-lg"><i class="fa-solid fa-chart-line"></i> Dashboard</a></div>
+    <div class="hero__stats"><div class="hero__stat"><div class="num">${catalog?catalog.all.length.toLocaleString('pt-BR'):'—'}</div><div class="lbl">Estudos no catálogo cBioPortal</div></div><div class="hero__stat"><div class="num">${catalog?catalog.lla.length.toLocaleString('pt-BR'):'—'}</div><div class="lbl">Estudos LLA filtrados</div></div><div class="hero__stat"><div class="num">${dp?Number(dp.pack.nAnalysisSamples).toLocaleString('pt-BR'):'—'}</div><div class="lbl">Amostras basais no cache</div></div><div class="hero__stat"><div class="num">${history.length}</div><div class="lbl">Análises locais</div></div></div>
+  </section>
+  <div class="project-summary">
+    <div class="summary-card"><div class="summary-card__icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h3>Catálogo cBioPortal</h3><p>Consulta o catálogo público em tempo real, identifica estudos compatíveis com LLA e permite carregar ou baixar o pacote bruto do estudo selecionado.</p></div>
+    <div class="summary-card"><div class="summary-card__icon"><i class="fa-solid fa-filter-circle-dollar"></i></div><h3>Coorte basal</h3><p>Em estudos TARGET, o GENESIS prioriza uma amostra primária por paciente e separa amostras de recaída, xen enxerto e normal da análise prognóstica de base.</p></div>
+    <div class="summary-card"><div class="summary-card__icon"><i class="fa-solid fa-chart-area"></i></div><h3>Análises reproduzíveis</h3><p>DEA, Kaplan-Meier, Cox e frequências de mutação são calculados a partir do estudo ativo, com FDR e escalas de expressão explicitadas.</p></div>
+    <div class="summary-card"><div class="summary-card__icon"><i class="fa-solid fa-user-shield"></i></div><h3>Pesquisa clínica, não assistência</h3><p>O caso é comparado à coorte de referência sem gerar escore mágico, diagnóstico ou porcentagem individual de sobrevida.</p></div>
+  </div>`;
