@@ -1,8 +1,0 @@
-GENESIS V10.2 — GitHub Pages
-
-Publicação esperada:
-- vite.config.ts com base /genesis-lla/
-- .github/workflows/deploy-pages.yml executa npm ci + npm run build
-- Settings > Pages > Source = GitHub Actions
-
-A página publicada deve usar os arquivos compilados da pasta dist, não o código-fonte Vite cru.
